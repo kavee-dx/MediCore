@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: medicore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+      - name: notification-service
+        image: medicore-notification-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          value: "3000"
+        - name: NODE_ENV
+          value: "development"
+        - name: JWT_SECRET
+          value: "e31203d467d0efc34b3d9c248e3c2a2e4a8345d6fee4a78a3cef8594d0a4551e94355d79da2ed4bf9021faa881a4213df017f243e5d3009518d2d6038f72df30"
+        - name: TEXTLK_API_TOKEN
+          value: "4553|oBZBmyk5MxLh78UMs1yBjZdTV2HTSvPCTn72F4qN7ac3250c"
+        - name: TEXTLK_SENDER_ID
+          value: "TextLKDemo"
+        - name: EMAIL_HOST
+          value: "smtp.gmail.com"
+        - name: EMAIL_PORT
+          value: "587"
+        - name: EMAIL_SECURE
+          value: "false"
+        - name: EMAIL_USER
+          value: "amashakav23@gmail.com"
+        - name: EMAIL_PASS
+          value: "prli nhrg vwdz uhee"
+        - name: EMAIL_FROM
+          value: "MediCore Health <amashakav23@gmail.com>"
+        - name: REDIS_HOST
+          value: "redis.medicore.svc.cluster.local"
+        - name: REDIS_PORT
+          value: "6379"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: medicore
+spec:
+  selector:
+    app: notification-service
+  ports:
+  - port: 3000
+    targetPort: 3000

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemedicine-service
+  namespace: medicore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telemedicine-service
+  template:
+    metadata:
+      labels:
+        app: telemedicine-service
+    spec:
+      containers:
+      - name: telemedicine-service
+        image: medicore-telemedicine-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          value: "3000"
+        - name: DB_HOST
+          value: "ep-lingering-glitter-a1r112o9-pooler.ap-southeast-1.aws.neon.tech"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: "medicore_telemedicine"
+        - name: DB_USER
+          value: "neondb_owner"
+        - name: DB_PASSWORD
+          value: "npg_ZnWA9KSEqO7c"
+        - name: DB_SSL
+          value: "true"
+        - name: JWT_SECRET
+          value: "e31203d467d0efc34b3d9c248e3c2a2e4a8345d6fee4a78a3cef8594d0a4551e94355d79da2ed4bf9021faa881a4213df017f243e5d3009518d2d6038f72df30"
+        - name: NODE_ENV
+          value: "production"
+        - name: AGORA_APP_ID
+          value: "10369a1cc85a48acade9a466d56075d2"
+        - name: AGORA_APP_CERTIFICATE
+          value: "7c37cc20385f4b2ead33c6b81641db92"
+        - name: AGORA_TOKEN_EXPIRY
+          value: "3600"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: telemedicine-service
+  namespace: medicore
+spec:
+  selector:
+    app: telemedicine-service
+  ports:
+  - port: 3000
+    targetPort: 3000

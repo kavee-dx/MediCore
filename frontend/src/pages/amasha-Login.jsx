@@ -328,9 +328,9 @@ export default function Login() {
             </p>
             <p className="text-center text-sm mt-2" style={{ color: '#26667F', fontFamily: "'DM Sans', sans-serif" }}>
             
-              <a href="http://localhost:5173/admin" className="font-semibold" style={{ color: '#124170' }}>
-                Admin Login
-              </a>
+              <Link to="/admin" className="font-semibold" style={{ color: '#124170' }}>
+  Admin Login
+</Link>
             </p>
           </div>
         </div>

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-symptom-service
+  namespace: medicore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-symptom-service
+  template:
+    metadata:
+      labels:
+        app: ai-symptom-service
+    spec:
+      containers:
+      - name: ai-symptom-service
+        image: medicore-ai-symptom-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          value: "3000"
+        - name: DATABASE_URL
+          value: "postgresql://neondb_owner:npg_ZnWA9KSEqO7c@ep-lingering-glitter-a1r112o9-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+        - name: GROQ_API_KEY
+          value: "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"
+        - name: GEMINI_API_KEY
+          value: "AIzaSyDeNdY-itftEB-Tk_CU1U5vbBw_OB1tNVU"
+        - name: JWT_SECRET
+          value: "e31203d467d0efc34b3d9c248e3c2a2e4a8345d6fee4a78a3cef8594d0a4551e94355d79da2ed4bf9021faa881a4213df017f243e5d3009518d2d6038f72df30"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-symptom-service
+  namespace: medicore
+spec:
+  selector:
+    app: ai-symptom-service
+  ports:
+  - port: 3000
+    targetPort: 3000
