@@ -423,6 +423,109 @@ router.get('/doctors/:id/availability', (req, res) => {
   proxyRequest(req, res, SERVICES.doctor, `/doctors/${req.params.id}/availability`);
 });
 
+// ─────────────────────────────────────────────
+// /api/* PREFIX ROUTES (from nginx proxy)
+// ─────────────────────────────────────────────
+router.get('/api/appointments/doctors/search', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/doctors/search?${query}`);
+});
+
+router.get('/api/appointments/doctors/:doctorId/availability', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/doctors/${req.params.doctorId}/availability?${query}`);
+});
+
+router.post('/api/appointments/book', (req, res) => {
+  proxyRequest(req, res, SERVICES.appointment, '/api/appointments/book');
+});
+
+router.get('/api/appointments/patient/my-appointments', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/patient/my-appointments?${query}`);
+});
+
+router.get('/api/appointments/doctor/my-appointments', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/doctor/my-appointments?${query}`);
+});
+
+router.patch('/api/appointments/:appointmentId/status', (req, res) => {
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/${req.params.appointmentId}/status`);
+});
+
+router.patch('/api/appointments/:appointmentId/reschedule', (req, res) => {
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/${req.params.appointmentId}/reschedule`);
+});
+
+router.patch('/api/appointments/:appointmentId/reject', (req, res) => {
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/${req.params.appointmentId}/reject`);
+});
+
+router.delete('/api/appointments/:appointmentId/cancel', (req, res) => {
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/${req.params.appointmentId}/cancel`);
+});
+
+router.put('/api/appointments/:appointmentId/complete', (req, res) => {
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/${req.params.appointmentId}/complete`);
+});
+
+router.get('/api/appointments/:appointmentId/telemedicine-eligibility', (req, res) => {
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/${req.params.appointmentId}/telemedicine-eligibility`);
+});
+
+router.post('/api/appointments/:appointmentId/start', (req, res) => {
+  proxyRequest(req, res, SERVICES.telemedicine, `/telemedicine/appointment/${req.params.appointmentId}/start`);
+});
+
+router.get('/api/telemedicine/doctor/sessions', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.telemedicine, `/telemedicine/doctor/sessions?${query}`);
+});
+
+router.get('/api/telemedicine/patient/sessions', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.telemedicine, `/telemedicine/patient/sessions?${query}`);
+});
+
+router.get('/api/telemedicine/appointment/:appointmentId', (req, res) => {
+  proxyRequest(req, res, SERVICES.telemedicine, `/telemedicine/appointment/${req.params.appointmentId}`);
+});
+
+router.post('/api/telemedicine/sessions', (req, res) => {
+  proxyRequest(req, res, SERVICES.telemedicine, '/telemedicine/sessions');
+});
+
+router.get('/api/telemedicine/sessions/:sessionId', (req, res) => {
+  proxyRequest(req, res, SERVICES.telemedicine, `/telemedicine/sessions/${req.params.sessionId}`);
+});
+
+router.post('/api/telemedicine/sessions/:sessionId/token', (req, res) => {
+  proxyRequest(req, res, SERVICES.telemedicine, `/telemedicine/sessions/${req.params.sessionId}/token`);
+});
+
+router.post('/api/telemedicine/sessions/:sessionId/join', (req, res) => {
+  proxyRequest(req, res, SERVICES.telemedicine, `/telemedicine/sessions/${req.params.sessionId}/join`);
+});
+
+router.post('/api/telemedicine/sessions/:sessionId/end', (req, res) => {
+  proxyRequest(req, res, SERVICES.telemedicine, `/telemedicine/sessions/${req.params.sessionId}/end`);
+});
+
+router.get('/api/doctors/me/appointments', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.doctor, `/doctors/me/appointments?${query}`);
+});
+
+router.get('/api/ai/symptoms/history', (req, res) => {
+  proxyRequest(req, res, SERVICES.ai, '/api/symptoms/history');
+});
+
+router.post('/api/ai/symptoms/text', (req, res) => {
+  proxyRequest(req, res, SERVICES.ai, '/api/symptoms/text');
+});
+
+
 // ─── APPOINTMENT SERVICE ROUTES ───────────────────────────────────────────────
 
 // Search doctors by specialty
@@ -488,6 +591,10 @@ router.put('/appointments/:appointmentId/complete', (req, res) => {
   proxyRequest(req, res, SERVICES.appointment, `/api/appointments/${req.params.appointmentId}/complete`);
 });
 
+router.get('/api/appointments/:appointmentId', (req, res) => {
+  proxyRequest(req, res, SERVICES.appointment, `/api/appointments/${req.params.appointmentId}`);
+});
+
 router.get('/appointments/:appointmentId', (req, res) => {
   proxyRequest(req, res, SERVICES.appointment, `/api/appointments/${req.params.appointmentId}`);
 });
@@ -506,6 +613,49 @@ router.post('/appointments/:appointmentId/start', (req, res) => {
 // ─────────────────────────────────────────────
 // PAYMENT SERVICE - ORDER MATTERS! Specific routes before parameterized routes
 // ─────────────────────────────────────────────
+// Payment routes with /api prefix
+router.post('/api/payments/initiate', (req, res) => {
+  proxyRequest(req, res, SERVICES.payment, '/api/payments/initiate');
+});
+
+router.post('/api/payments/webhook/payhere', (req, res) => {
+  proxyRequest(req, res, SERVICES.payment, '/api/payments/webhook/payhere');
+});
+
+router.post('/api/payments/complete-manual', (req, res) => {
+  proxyRequest(req, res, SERVICES.payment, '/api/payments/complete-manual');
+});
+
+router.post('/api/payments/cancel-with-refund', (req, res) => {
+  proxyRequest(req, res, SERVICES.payment, '/api/payments/cancel-with-refund');
+});
+
+router.get('/api/payments/patient/my-payments', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.payment, `/api/payments/patient/my-payments?${query}`);
+});
+
+router.get('/api/payments/doctor/my-earnings', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.payment, `/api/payments/doctor/my-earnings?${query}`);
+});
+
+router.get('/api/payments/order/:orderId', (req, res) => {
+  proxyRequest(req, res, SERVICES.payment, `/api/payments/order/${req.params.orderId}`);
+});
+
+router.get('/api/payments/:paymentId/status', (req, res) => {
+  proxyRequest(req, res, SERVICES.payment, `/api/payments/${req.params.paymentId}/status`);
+});
+
+router.get('/api/payments/:paymentId', (req, res) => {
+  proxyRequest(req, res, SERVICES.payment, `/api/payments/${req.params.paymentId}`);
+});
+
+router.post('/api/payments/:paymentId/refund', (req, res) => {
+  proxyRequest(req, res, SERVICES.payment, `/api/payments/${req.params.paymentId}/refund`);
+});
+
 router.post('/payments/initiate', (req, res) => {
   proxyRequest(req, res, SERVICES.payment, '/api/payments/initiate');
 });
@@ -613,6 +763,110 @@ router.post('/ai/symptoms/voice', async (req, res) => {
 
 router.get('/ai/symptoms/history', (req, res) => {
   proxyRequest(req, res, SERVICES.ai, '/api/symptoms/history');
+});
+
+// Admin routes with /api prefix
+router.get('/api/admin/stats', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, '/admin/stats');
+});
+
+router.get('/api/admin/doctors', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.admin, `/admin/doctors?${query}`);
+});
+
+router.get('/api/admin/doctors/active-status', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, '/admin/doctors/active-status');
+});
+
+router.get('/api/admin/doctors/:id', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/doctors/${req.params.id}`);
+});
+
+router.patch('/api/admin/doctors/:id/verify', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/doctors/${req.params.id}/verify`);
+});
+
+router.get('/api/admin/doctors/:id/availability', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/doctors/${req.params.id}/availability`);
+});
+
+router.put('/api/admin/doctors/:id/suspend', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/doctors/${req.params.id}/suspend`);
+});
+
+router.put('/api/admin/doctors/:id/reactivate', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/doctors/${req.params.id}/reactivate`);
+});
+
+router.post('/api/admin/doctors/:id/ai-analyze', async (req, res) => {
+  try {
+    const url = `${SERVICES.admin}/admin/doctors/${req.params.id}/ai-analyze`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: req.headers.authorization || '',
+        'Content-Type': req.headers['content-type'] || '',
+      },
+      body: req,
+    });
+    const data = await response.text();
+    res.status(response.status).send(data ? JSON.parse(data) : {});
+  } catch (error) {
+    res.status(502).json({ error: 'Service unavailable', detail: error.message });
+  }
+});
+
+router.get('/api/admin/users/stats', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, '/admin/users/stats');
+});
+
+router.get('/api/admin/users', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.admin, `/admin/users?${query}`);
+});
+
+router.get('/api/admin/users/:id', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/users/${req.params.id}`);
+});
+
+router.put('/api/admin/users/:id/suspend', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/users/${req.params.id}/suspend`);
+});
+
+router.put('/api/admin/users/:id/activate', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/users/${req.params.id}/activate`);
+});
+
+router.put('/api/admin/users/:id/ban', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/users/${req.params.id}/ban`);
+});
+
+router.get('/api/admin/appointments', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.admin, `/admin/appointments?${query}`);
+});
+
+router.get('/api/admin/payments/stats', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, '/admin/payments/stats');
+});
+
+router.get('/api/admin/payments/transactions', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.admin, `/admin/payments/transactions?${query}`);
+});
+
+router.get('/api/admin/payments/analytics', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, '/admin/payments/analytics');
+});
+
+router.get('/api/admin/payments/:id', (req, res) => {
+  proxyRequest(req, res, SERVICES.admin, `/admin/payments/${req.params.id}`);
+});
+
+router.get('/api/admin/payments', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  proxyRequest(req, res, SERVICES.admin, `/admin/payments?${query}`);
 });
 
 // ─────────────────────────────────────────────

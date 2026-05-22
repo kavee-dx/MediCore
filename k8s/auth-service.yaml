@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: medicore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: medicore-auth-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3003
+        env:
+        - name: PORT
+          value: "3003"
+        - name: NODE_ENV
+          value: "development"
+        - name: DATABASE_URL
+          value: "postgresql://neondb_owner:npg_ZnWA9KSEqO7c@ep-lingering-glitter-a1r112o9-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+        - name: DOCTOR_DATABASE_URL
+          value: "postgresql://neondb_owner:npg_ZnWA9KSEqO7c@ep-lingering-glitter-a1r112o9-pooler.ap-southeast-1.aws.neon.tech/medicore_doctor?sslmode=require"
+        - name: JWT_SECRET
+          value: "e31203d467d0efc34b3d9c248e3c2a2e4a8345d6fee4a78a3cef8594d0a4551e94355d79da2ed4bf9021faa881a4213df017f243e5d3009518d2d6038f72df30"
+        - name: PATIENT_SERVICE_URL
+          value: "http://patient-service.medicore.svc.cluster.local:3000"
+        - name: REDIS_HOST
+          value: "redis.medicore.svc.cluster.local"
+        - name: REDIS_PORT
+          value: "6379"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: medicore
+spec:
+  selector:
+    app: auth-service
+  ports:
+  - port: 3000
+    targetPort: 3003

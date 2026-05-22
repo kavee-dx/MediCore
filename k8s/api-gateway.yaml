@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: medicore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: medicore-api-gateway:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: NODE_ENV
+          value: "development"
+        - name: JWT_SECRET
+          value: "e31203d467d0efc34b3d9c248e3c2a2e4a8345d6fee4a78a3cef8594d0a4551e94355d79da2ed4bf9021faa881a4213df017f243e5d3009518d2d6038f72df30"
+        - name: API_BASE_URL
+          value: "http://api-gateway.medicore.svc.cluster.local:8080"
+        - name: ROUTE_FALLBACK_ENABLED
+          value: "true"
+        - name: APPOINTMENT_ROUTE_PREFIX
+          value: "/appointments"
+        - name: AUTH_SERVICE_URL
+          value: "http://auth-service.medicore.svc.cluster.local:3000"
+        - name: PATIENT_SERVICE_URL
+          value: "http://patient-service.medicore.svc.cluster.local:3000"
+        - name: DOCTOR_SERVICE_URL
+          value: "http://doctor-service.medicore.svc.cluster.local:3000"
+        - name: APPOINTMENT_SERVICE_URL
+          value: "http://appointment-service.medicore.svc.cluster.local:3000"
+        - name: PAYMENT_SERVICE_URL
+          value: "http://payment-service.medicore.svc.cluster.local:3000"
+        - name: NOTIFICATION_SERVICE_URL
+          value: "http://notification-service.medicore.svc.cluster.local:3000"
+        - name: TELEMEDICINE_SERVICE_URL
+          value: "http://telemedicine-service.medicore.svc.cluster.local:3000"
+        - name: AI_SERVICE_URL
+          value: "http://ai-symptom-service.medicore.svc.cluster.local:3000"
+        - name: ADMIN_SERVICE_URL
+          value: "http://admin-service.medicore.svc.cluster.local:3000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: medicore
+spec:
+  selector:
+    app: api-gateway
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: LoadBalancer
