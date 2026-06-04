@@ -2,6 +2,15 @@
 
 A full-stack microservices-based healthcare platform enabling online doctor consultations, appointment scheduling, real-time video communication, and AI-powered symptom assessment.
 
+<p align="center">
+  <img src="./screenshots/home.png" width="1200"/>
+</p>
+
+<p align="center">
+  <em>MediCore Healthcare Platform - Home Dashboard</em>
+</p>
+
+
 ---
 
 ## 📖 About
